@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(open("resources/most_sold_games_steam.html"), 'html.parser')
+soup = BeautifulSoup(open("resources/most_sold_games_steam.html", encoding='utf8'), 'html.parser')
 rows = soup.find_all(href=True)
 
 data_set = []
