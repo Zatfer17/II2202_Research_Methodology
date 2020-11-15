@@ -29,7 +29,9 @@ for row in rows:
 data_df = pd.DataFrame(data_set, columns = ["name", "link", "tags"])
 tags_df = pd.DataFrame(tags_set, columns = ["tag", "popularity"])
 print(data_df.head())
+data_df.to_json(r'resources/games.json', orient='records', indent=2)
 aggregation_functions = {'tag': 'first', 'popularity': 'sum'}
 tags_df = tags_df.groupby('tag', as_index=False).aggregate(aggregation_functions)
 print(tags_df)
+tags_df.to_json(r'resources/tags.json', orient='split', indent=2)
 
