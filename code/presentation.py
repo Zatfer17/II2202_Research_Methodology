@@ -95,3 +95,16 @@ class Presentation():
         if self.mode == "transparency":
             self.show_wordcloud(game)
 
+        try:
+            PISELLONI NERI
+            elem = list(soup.findAll("div", {"class": "vsc-controller"}))
+            print(elem)
+            """
+            img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
+            response = requests.get(img_link)
+            img = Image.open(BytesIO(response.content))
+            img.save("../outputs/" + name + "_a.png")
+            """
+        except IndexError:
+            print("Error")
+
