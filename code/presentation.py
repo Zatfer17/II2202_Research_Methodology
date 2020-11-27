@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
+from datetime import datetime
+import os
 
 class Presentation():
 
@@ -55,7 +57,7 @@ class Presentation():
                 l = int(50)
         return "hsl({}, {}%, {}%)".format(h, s, l)
 
-    def show_wordcloud(self, game):
+    def show_wordcloud(self, folder, game):
         recommended_tags = self.ICM[self.ICM["ItemID"] == game]["FeatureID"].values
         recommended_tags_ID = []
 
@@ -76,35 +78,29 @@ class Presentation():
         plt.imshow(wordcloud)
         plt.axis('off')
         #plt.show()
-        plt.savefig("../outputs/" + name + "_b.png")
+        plt.savefig("../outputs/" + folder + "/" + name + "_b.png")
 
     def present_result(self, game, ICM_link):
         name = util.get_key(self.itemID_to_index, game)
         link = ICM_link[ICM_link["name"] == name]["link"].iloc[0]
         website = requests.get(link).content
         soup = BeautifulSoup(website, 'html.parser')
+        time = datetime.now()
+        folder = time.strftime("%d_%m_%Y_%H:%M:%S")
+        path = os.getcwd()
+        destination_path = path.replace("code", "") + "outputs/" + folder
+        os.mkdir(destination_path, 0o755)
         try:
             elem = str(list(soup.findAll("div", {"class": "game_header_image_ctn"}).pop().children)[1])
             img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
             response = requests.get(img_link)
             img = Image.open(BytesIO(response.content))
-            img.save("../outputs/" + name + "_a.png")
+            img.save("../outputs/" + folder + "/" + name + "_a.png")
         except IndexError:
             print("Error")
 
         if self.mode == "transparency":
-            self.show_wordcloud(game)
+            self.show_wordcloud(folder, game)
 
-        try:
-            PISELLONI NERI
-            elem = list(soup.findAll("div", {"class": "vsc-controller"}))
-            print(elem)
-            """
-            img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
-            response = requests.get(img_link)
-            img = Image.open(BytesIO(response.content))
-            img.save("../outputs/" + name + "_a.png")
-            """
-        except IndexError:
-            print("Error")
+        print(link)
 

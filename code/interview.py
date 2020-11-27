@@ -11,9 +11,9 @@ recsys.apply_mappings(ICM, URM, userID_to_index, itemID_to_index, featureID_to_i
 
 ICM_all, URM_all = recsys.convert_to_sparse(ICM, URM, userID_to_index, itemID_to_index, featureID_to_index)
 
-recommender = cbf.Recommender(URM_all, ICM_all)
+recommender = cbf.Recommender(URM_all, ICM_all, itemID_to_index)
 recommender.fit(shrink=10, topK=50)
-games = recommender.recommend(0, at=5)
+games = recommender.recommend(0)
 
 recommendations = []
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import scipy.sparse as sps
+import random
 
 def setup_ICM(path1, path2):
     df1 = pd.read_json(path1)
@@ -23,15 +24,23 @@ def create_URM(path):
     #if liked +5, if disliked -5, if unknown don't add
     df = pd.read_json(path)
     ratings = []
-    for game in df["name"][:5]:
-        print("PLEASE RATE THIS GAME: " + game)
-        rating = input("y IF YOU LIKE IT, n IF YOU DISLIKE IT, d IF YOU DON'T KNOW: ")
 
+    indexes = list(range(df.shape[0]))
+    to_ask = []
+
+    for i in range(10):
+        p = random.choice(indexes)
+        indexes.remove(p)
+        to_ask.append(p)
+
+
+    for i in to_ask:
+        rating = input("Do you like this game: \"" + str(df.at[i, 'name']) + "\" (" + df.at[i, "link"] + ") ? y (Yes), n (No) or d (Don't know): ")
         if rating == "y":
-            ratings.append([0, game, 5.0])
+            ratings.append([0, df.at[i, "name"], 5.0])
         elif rating == "n":
-            ratings.append([0, game, -5.0])
-
+            ratings.append([0, df.at[i, "name"], -5.0])
+    print()
     URM = pd.DataFrame(ratings, columns=["UserID", "ItemID", "Interaction"])
     #URM = pd.DataFrame(np.array([[0, "Football Manager 2021", 5.0], [0, "Motorsport Manager", -5.0]]),
                        #columns=["UserID", "ItemID", "Interaction"])
