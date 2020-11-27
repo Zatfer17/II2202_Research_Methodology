@@ -7,6 +7,7 @@ from PIL import Image
 from io import BytesIO
 from datetime import datetime
 import os
+from collections import Counter
 
 class Presentation():
 
@@ -18,39 +19,35 @@ class Presentation():
         self.featureID_to_index = featureID_to_index
         self.mode = mode
 
-
         self.tags = {}
+
+        self.liked_tags = {}
+        self.disliked_tags = {}
+        self.indifferent_tags = {}
 
         liked_games = self.URM.loc[(URM["UserID"] == 0) & (self.URM["Interaction"] > 0.0)]["ItemID"].values
         liked_tags = self.ICM[self.ICM["ItemID"].isin(liked_games)]["FeatureID"].values
         for tag in liked_tags:
             t = util.get_key(self.featureID_to_index, tag)
-            if t not in self.tags:
-                self.tags[t] = 0
-            self.tags[t] += 1
+            if t not in self.liked_tags:
+                self.liked_tags[t] = 0.0
+            self.liked_tags[t] += 1.0
 
         disliked_games = self.URM.loc[(self.URM["UserID"] == 0) & (self.URM["Interaction"] < 0.0)]["ItemID"].values
         disliked_tags = self.ICM[self.ICM["ItemID"].isin(disliked_games)]["FeatureID"].values
         for tag in disliked_tags:
             t = util.get_key(self.featureID_to_index, tag)
-            if t not in self.tags:
-                self.tags[t] = 0
-            self.tags[t] -= 1
+            if t not in self.disliked_tags:
+                self.disliked_tags[t] = 0.0
+            self.disliked_tags[t] += 1.0
 
     def color(self, word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None):
-        print(self.tags)
-        print(word)
-        if word not in self.tags:
-            print("Not present")
-            h = int(0)
-            s = int(0)
-            l = int(50)
-        else:
-            if self.tags[word] > 0:
+        if word in self.liked_tags and word in self.disliked_tags:
+            if self.liked_tags[word] - self.disliked_tags[word] > 0.0:
                 h = int(140)
                 s = int(100)
                 l = int(50)
-            elif self.tags[word] == 0:
+            elif self.liked_tags[word] - self.disliked_tags[word] == 0.0:
                 h = int(0)
                 s = int(0)
                 l = int(50)
@@ -58,22 +55,37 @@ class Presentation():
                 h = int(0)
                 s = int(100)
                 l = int(50)
+        elif word in self.liked_tags and word not in self.disliked_tags:
+            h = int(140)
+            s = int(100)
+            l = int(50)
+        elif word not in self.liked_tags and word in self.disliked_tags:
+            h = int(0)
+            s = int(100)
+            l = int(50)
+        elif word in self.indifferent_tags:
+            h = int(0)
+            s = int(0)
+            l = int(50)
         return "hsl({}, {}%, {}%)".format(h, s, l)
 
     def show_wordcloud(self, folder, game):
         recommended_tags = self.ICM[self.ICM["ItemID"] == game]["FeatureID"].values
-        recommended_tags_ID = []
 
         for r in recommended_tags:
-            recommended_tags_ID.append(util.get_key(self.featureID_to_index, r))
+            t = util.get_key(self.featureID_to_index, r)
+            if t not in self.tags:
+                self.indifferent_tags[t] = 1.0
 
-        file_content = ' '.join(recommended_tags_ID)
+        temp = Counter(self.liked_tags) + Counter(self.indifferent_tags)
+        self.tags = temp + Counter(self.disliked_tags)
+
         wordcloud = WordCloud(stopwords=STOPWORDS,
                               background_color='white',
                               width=1200,
                               height=1000,
                               color_func=self.color
-                              ).generate(file_content)
+                              ).generate_from_frequencies(self.tags)
 
         name = util.get_key(self.itemID_to_index, game)
         plt.title(name, fontdict={
