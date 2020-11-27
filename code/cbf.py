@@ -1,12 +1,15 @@
 from external_libraries.Base.Similarity.Compute_Similarity_Python import Compute_Similarity_Python
 import numpy as np
 import util
+import requests
+from bs4 import BeautifulSoup
 
 class Recommender(object):
 
-    def __init__(self, URM, ICM, itemID_to_index):
+    def __init__(self, URM, ICM, ICM_link, itemID_to_index):
         self.URM = URM
         self.ICM = ICM
+        self.ICM_link = ICM_link
         self.itemID_to_index = itemID_to_index
 
     def fit(self, topK=50, shrink=100, normalize=True, similarity="cosine"):
@@ -26,13 +29,26 @@ class Recommender(object):
         already_known = "y"
         while already_known == "y":
             for recommended in ranking:
-                print("Recommended game: " + str(util.get_key(self.itemID_to_index, recommended)))
-                already_known = input("Do you already know this game? y or n: ")
-                if already_known == "y":
-                    print("Suggesting a new one...")
-                    print()
-                else:
-                    break
+
+                name = util.get_key(self.itemID_to_index, recommended)
+                link = self.ICM_link[self.ICM_link["name"] == name]["link"].iloc[0]
+                website = requests.get(link).content
+                soup = BeautifulSoup(website, 'html.parser')
+
+                dlc = False
+                tags = soup.findAll("div", {"class": "game_area_details_specs"})
+                for t in tags:
+                    if "https://steamstore-a.akamaihd.net/public/images/v6/ico/ico_dlc.png" in str(t):
+                        dlc = True
+
+                if not dlc:
+                    print("Recommended game: " + str(name))
+                    already_known = input("Do you already know this game? y or n: ")
+                    if already_known == "y":
+                        print("Suggesting a new one...")
+                        print()
+                    else:
+                        break
 
         return [recommended]
 
@@ -42,6 +58,3 @@ class Recommender(object):
         user_profile = self.URM.indices[start_pos:end_pos]
         scores[user_profile] = -np.inf
         return scores
-
-    def get_tags_map(self, user_id):
-        print(self.URM[user_id])

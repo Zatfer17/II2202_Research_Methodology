@@ -38,7 +38,10 @@ class Presentation():
             self.tags[t] -= 1
 
     def color(self, word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None):
+        print(self.tags)
+        print(word)
         if word not in self.tags:
+            print("Not present")
             h = int(0)
             s = int(0)
             l = int(50)
@@ -95,7 +98,14 @@ class Presentation():
             img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
             response = requests.get(img_link)
             img = Image.open(BytesIO(response.content))
-            img.save("../outputs/" + folder + "/" + name + "_a.png")
+            img.convert('RGB').save("../outputs/" + folder + "/" + name + "_a.png", "PNG", optimize=True)
+
+            """
+            elem = list(soup.findAll("div", {"class": "game_area_description"}))
+            for e in elem:
+                if "About This Game" in str(e):
+                    print(e)
+            """
         except IndexError:
             print("Error")
 

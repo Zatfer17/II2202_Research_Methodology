@@ -34,6 +34,7 @@ def create_URM(path):
         to_ask.append(p)
 
 
+    print()
     for i in to_ask:
         rating = input("Do you like this game: \"" + str(df.at[i, 'name']) + "\" (" + df.at[i, "link"] + ") ? y (Yes), n (No) or d (Don't know): ")
         if rating == "y":
