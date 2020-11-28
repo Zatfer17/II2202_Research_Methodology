@@ -72,14 +72,14 @@ class Presentation():
         plt.imshow(wordcloud)
         plt.axis('off')
         #plt.show()
-        plt.savefig("../outputs/" + folder + "/" + name + "_b.png")
+        plt.savefig("./outputs/" + folder + "/" + name + "_b.png")
 
     def present_result(self, games, ICM_link):
 
         time = datetime.now()
         folder = time.strftime("%d_%m_%Y_%H:%M:%S")
         path = os.getcwd()
-        destination_path = path.replace("code", "") + "outputs/" + folder
+        destination_path = path.replace("code", "") + "/outputs/" + folder
         os.mkdir(destination_path, 0o755)
 
         for i in range(4):
@@ -94,7 +94,7 @@ class Presentation():
                 img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
                 response = requests.get(img_link)
                 img = Image.open(BytesIO(response.content))
-                img.convert('RGB').save("../outputs/" + folder + "/" + name + "_a.png", "PNG", optimize=True)
+                img.convert('RGB').save("./outputs/" + folder + "/" + name + "_a.png", "PNG", optimize=True)
 
             except IndexError:
                 print("Error")

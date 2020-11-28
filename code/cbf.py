@@ -1,3 +1,6 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from external_libraries.Base.Similarity.Compute_Similarity_Python import Compute_Similarity_Python
 import numpy as np
 import util
@@ -48,6 +51,8 @@ class Recommender(object):
                 if not dlc:
                     print("Recommended game: " + str(name))
                     already_known = input("Do you already know this game? y or n: ")
+                    while already_known not in ["y", "n"]:
+                        already_known = input("Do you already know this game? y or n: ")
                     if already_known == "y":
                         print("Suggesting a new one...")
                         print()

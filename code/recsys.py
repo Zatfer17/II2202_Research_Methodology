@@ -28,7 +28,7 @@ def create_URM(path):
     indexes = list(range(df.shape[0]))
     to_ask = []
 
-    for i in range(101):
+    for i in range(10):
         p = random.choice(indexes)
         indexes.remove(p)
         to_ask.append(p)
@@ -36,6 +36,8 @@ def create_URM(path):
     print()
     for i in to_ask:
         rating = input("Do you like this game: \"" + str(df.at[i, 'name']) + "\" (" + df.at[i, "link"] + ") ? y (Yes), n (No) or d (Don't know): ")
+        while rating not in ["y", "n", "d"]:
+            rating = input("Do you like this game: \"" + str(df.at[i, 'name']) + "\" (" + df.at[i, "link"] + ") ? y (Yes), n (No) or d (Don't know): ")
         if rating == "y":
             ratings.append([0, df.at[i, "name"], 5.0])
         elif rating == "n":
