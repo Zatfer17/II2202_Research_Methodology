@@ -27,6 +27,10 @@ class Recommender(object):
         ranking = scores.argsort()[::-1]
 
         already_known = "y"
+        recommended_items = 0
+
+        recommendations = []
+
         while already_known == "y":
             for recommended in ranking:
 
@@ -48,9 +52,12 @@ class Recommender(object):
                         print("Suggesting a new one...")
                         print()
                     else:
-                        break
+                        recommended_items += 1
+                        recommendations.append(recommended)
+                if recommended_items == 4:
+                    break
 
-        return [recommended]
+        return recommendations
 
     def filter_seen(self, user_id, scores):
         start_pos = self.URM.indptr[user_id]
