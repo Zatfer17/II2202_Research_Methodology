@@ -2,9 +2,13 @@ import cbf
 import recsys
 import util
 import presentation
+import json
 
-ICM, ICM_link = recsys.setup_ICM("../resources/sfw_games.json", "../resources/most_popular_games_steam.json")
-URM = recsys.create_URM("../resources/most_popular_games_steam.json")
+sfw_games = "./resources/sfw_games.json"
+most_popular_games_steam = "./resources/most_popular_games_steam.json"
+
+ICM, ICM_link = recsys.setup_ICM(sfw_games, most_popular_games_steam)
+URM = recsys.create_URM(most_popular_games_steam)
 
 userID_to_index, itemID_to_index, featureID_to_index = recsys.create_mappings(ICM, URM)
 recsys.apply_mappings(ICM, URM, userID_to_index, itemID_to_index, featureID_to_index)
