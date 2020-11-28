@@ -17,10 +17,9 @@ ICM_all, URM_all = recsys.convert_to_sparse(ICM, URM, userID_to_index, itemID_to
 
 recommender = cbf.Recommender(URM_all, ICM_all, ICM_link, itemID_to_index)
 recommender.fit(shrink=10, topK=50)
+
 games = recommender.recommend(0)
-
 recommendations = []
+presentation = presentation.Presentation(ICM, URM, itemID_to_index, featureID_to_index)
 
-presentation = presentation.Presentation(ICM, URM, itemID_to_index, featureID_to_index, mode="transparency")
-for game in games:
-    presentation.present_result(game, ICM_link)
+presentation.present_result(games, ICM_link)
