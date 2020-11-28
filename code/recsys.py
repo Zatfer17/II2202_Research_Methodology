@@ -28,7 +28,7 @@ def create_URM(path):
     indexes = list(range(df.shape[0]))
     to_ask = []
 
-    for i in range(101):
+    for i in range(10):
         p = random.choice(indexes)
         indexes.remove(p)
         to_ask.append(p)

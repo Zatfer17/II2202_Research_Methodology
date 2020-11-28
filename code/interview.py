@@ -4,8 +4,8 @@ import util
 import presentation
 import json
 
-sfw_games = "./resources/sfw_games.json"
-most_popular_games_steam = "./resources/most_popular_games_steam.json"
+sfw_games = "../resources/sfw_games.json"
+most_popular_games_steam = "../resources/most_popular_games_steam.json"
 
 ICM, ICM_link = recsys.setup_ICM(sfw_games, most_popular_games_steam)
 URM = recsys.create_URM(most_popular_games_steam)

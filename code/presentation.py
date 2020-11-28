@@ -42,17 +42,17 @@ class Presentation():
             s = int(0)
             l = int(50)
         else:
-            if self.tags[word] > 0:
+            if self.tags[word] > 1:
                 h = int(140)
                 s = int(100)
                 l = int(50)
-            elif self.tags[word] == 0:
+            elif self.tags[word] < -1:
                 h = int(0)
-                s = int(0)
+                s = int(100)
                 l = int(50)
             else:
                 h = int(0)
-                s = int(100)
+                s = int(0)
                 l = int(50)
         return "hsl({}, {}%, {}%)".format(h, s, l)
 
