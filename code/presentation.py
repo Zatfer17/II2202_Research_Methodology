@@ -9,6 +9,13 @@ from datetime import datetime
 import os
 from collections import Counter
 
+forbidden = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+
+def cleanup_name(name):
+    for c in forbidden:
+        name = name.replace(c, "_")
+    return name
+
 class Presentation():
 
     def __init__(self, ICM, URM, itemID_to_index, featureID_to_index):
@@ -72,15 +79,15 @@ class Presentation():
         plt.imshow(wordcloud)
         plt.axis('off')
         #plt.show()
-        plt.savefig("./outputs/" + folder + "/" + name + "_b.png")
+        plt.savefig("..\\outputs\\" + folder + "\\" + cleanup_name(name) + "_b.png")
 
     def present_result(self, games, ICM_link):
 
         time = datetime.now()
-        folder = time.strftime("%d_%m_%Y_%H:%M:%S")
+        folder = time.strftime("%d_%m_%Y_%H_%M_%S")
         path = os.getcwd()
-        destination_path = path.replace("code", "") + "/outputs/" + folder
-        os.mkdir(destination_path, 0o755)
+        destination_path = path.replace("code", "") + "outputs\\" + folder
+        os.makedirs(destination_path)
 
         for i in range(4):
             game = games[i]
@@ -94,7 +101,7 @@ class Presentation():
                 img_link = elem.replace("<img class=\"game_header_image_full\" src=\"", "").replace("\"/>", "")
                 response = requests.get(img_link)
                 img = Image.open(BytesIO(response.content))
-                img.convert('RGB').save("./outputs/" + folder + "/" + name + "_a.png", "PNG", optimize=True)
+                img.convert('RGB').save("..\\outputs\\" + folder + "\\" + cleanup_name(name) + "_a.png", "PNG", optimize=True)
 
             except IndexError:
                 print("Error")
