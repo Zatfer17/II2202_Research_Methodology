@@ -1,2 +1,4 @@
 notes.txt
 *.pyc
+outputs*
+.vscode

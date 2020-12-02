@@ -20,46 +20,61 @@ def setup_ICM(path1, ICM_append):
 
     return ICM, ICM_link
 
-def get_k_most_popular_tags(path, k):
+def get_k_most_popular_tags(path, k1, k2, num=15):
     banned_tags = ["Sexual Content", "Nudity", "Mature", "Dating Sim", "Gore", "NSFW", "Hentai", "Cute", "Otome"]
     with open(path) as json_file:
-        data = json.load(json_file)["data"]
-    k_most_popular = []
-    c = 0
-    i = 0
-    while c < k:
-        if data[i][0] not in banned_tags:
-            k_most_popular.append(data[i][0])
-            c += 1
-        i += 1
-    #print(k_most_popular)
+        types = json.load(json_file)["type"]
+    with open(path) as json_file:
+        genres = json.load(json_file)["genre"]
+    k_types = []
+    k_genres = []
+    c1 = 0
+    c2 = 0
+    i1 = 0
+    i2 = 0
+    while c1 < k1:
+        if types[i1][0] not in banned_tags:
+            k_types.append(types[i1][0])
+            c1 += 1
+        i1 += 1
+
+    while c2 < k2:
+        if genres[i2][0] not in banned_tags:
+            k_genres.append(genres[i2][0])
+            c2 += 1
+        i2 += 1
+    #print(k_types)
 
     combos = []
-    for i in range(k):
-        copy = k_most_popular.copy()
-        random.shuffle(copy)
-        t1 = copy.pop()
-        t2 = copy.pop()
-        while ((t1,t2) in combos or (t2, t1) in combos):
-            copy = k_most_popular.copy()
-            random.shuffle(copy)
-            t1 = copy.pop()
-            t2 = copy.pop()
-        combos.append((t1, t2))
+    for i in range(num):
+        copy_types = k_types.copy()
+        copy_genres = k_genres.copy()
+        random.shuffle(copy_types)
+        random.shuffle(copy_genres)
+        t1 = copy_types.pop()
+        t2 = copy_genres.pop()
+        while((t1, t2) in combos or (t2, t1) in combos):
+            copy_types = k_types.copy()
+            copy_genres = k_genres.copy()
+            random.shuffle(copy_types)
+            random.shuffle(copy_genres)
+            t1 = copy_types.pop()
+            t2 = copy_genres.pop()
+        combos.append([t1, t2])
 
     liked_tags = {}
     disliked_tags = {}
-    for i, c in enumerate(combos):
-        rating = input("Do you like this genres: " + str(c) + " ? ")
+    for i1, c1 in enumerate(combos):
+        rating = input("Do you like this genres: " + str(c1) + " ? ")
         while rating not in ["y", "n", "d"]:
-            rating = input("Do you like this genres: " + str(c) + " ? ")
+            rating = input("Do you like this genres: " + str(c1) + " ? ")
         if rating == "y":
-            for t in c:
+            for t in c1:
                 if t not in liked_tags:
                     liked_tags[t] = 0
                 liked_tags[t] += 1
         elif rating == "n":
-            for t in c:
+            for t in c1:
                 if t not in disliked_tags:
                     disliked_tags[t] = 0
                 disliked_tags[t] += 1

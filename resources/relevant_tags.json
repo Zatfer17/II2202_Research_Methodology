@@ -3,14 +3,10 @@
       "tag",
       "popularity"
     ],
-    "data":[
+    "type":[
       [
         "Singleplayer",
         629
-      ],
-      [
-        "Indie",
-        482
       ],
       [
         "Multiplayer",
@@ -41,20 +37,34 @@
         170
       ],
       [
-        "FPS",
-        167
-      ],
-      [
         "2D",
         156
       ],
       [
-        "Shooter",
-        148
-      ],
-      [
         "Online",
         145
+      ],
+      [
+        "Local Multiplayer",
+        100
+      ],
+      [
+        "PvP",
+        77
+      ]
+    ],
+    "genre":[
+      [
+        "Indie",
+        482
+      ],
+      [
+        "FPS",
+        167
+      ],
+      [
+        "Shooter",
+        148
       ],
       [
         "Fantasy",
@@ -65,20 +75,8 @@
         121
       ],
       [
-        "Realistic",
-        115
-      ],
-      [
-        "Puzzle",
-        114
-      ],
-      [
         "Exploration",
         112
-      ],
-      [
-        "Local Multiplayer",
-        100
       ],
       [
         "Classic",
@@ -113,10 +111,6 @@
         80
       ],
       [
-        "PvP",
-        77
-      ],
-      [
         "Crafting",
         77
       ],
@@ -137,17 +131,13 @@
         71
       ],
       [
-        "Racing",
-        67
-      ],
-      [
         "Moddable",
         67
       ],
       [
         "Arcade",
         64
-      ],
+      ],    
       [
         "Retro",
         63
