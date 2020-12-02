@@ -6,6 +6,7 @@ import numpy as np
 import util
 import requests
 from bs4 import BeautifulSoup
+import random
 
 class Recommender(object):
 
@@ -24,45 +25,44 @@ class Recommender(object):
     def recommend(self, user_id, exclude_seen=True):
         user_profile = self.URM[user_id]
         scores = user_profile.dot(self.W_sparse).toarray().ravel()
+        #print(scores)
 
         if exclude_seen:
             scores = self.filter_seen(user_id, scores)
         ranking = scores.argsort()[::-1]
+        #print(ranking)
 
-        already_known = "y"
         recommended_items = 0
-
         recommendations = []
 
-        while already_known == "y":
-            for recommended in ranking:
+        for recommended in ranking:
 
-                name = util.get_key(self.itemID_to_index, recommended)
-                link = self.ICM_link[self.ICM_link["name"] == name]["link"].iloc[0]
-                website = requests.get(link).content
-                soup = BeautifulSoup(website, 'html.parser')
+            name = util.get_key(self.itemID_to_index, recommended)
+            link = self.ICM_link[self.ICM_link["name"] == name]["link"].iloc[0]
+            website = requests.get(link).content
+            soup = BeautifulSoup(website, 'html.parser')
 
-                dlc = False
-                tags = soup.findAll("div", {"class": "game_area_details_specs"})
-                for t in tags:
-                    if "https://steamstore-a.akamaihd.net/public/images/v6/ico/ico_dlc.png" in str(t):
-                        dlc = True
+            dlc = False
+            tags = soup.findAll("div", {"class": "game_area_details_specs"})
+            for t in tags:
+                if "https://steamstore-a.akamaihd.net/public/images/v6/ico/ico_dlc.png" in str(t):
+                    dlc = True
 
-                if not dlc:
-                    print("Recommended game: " + str(name))
+            if not dlc:
+                print("Recommended game: " + str(name))
+                already_known = input("Do you already know this game? y or n: ")
+                while already_known not in ["y", "n"]:
                     already_known = input("Do you already know this game? y or n: ")
-                    while already_known not in ["y", "n"]:
-                        already_known = input("Do you already know this game? y or n: ")
-                    if already_known == "y":
-                        print("Suggesting a new one...")
-                        print()
-                    else:
-                        recommended_items += 1
-                        recommendations.append(recommended)
-                if recommended_items == 4:
-                    break
+                if already_known == "y":
+                    print("Suggesting a new one...")
+                    print()
+                else:
+                    recommended_items += 1
+                    recommendations.append(recommended)
+            if recommended_items == 4:
+                break
 
-        return recommendations
+        return [recommendations[0], recommendations[2], recommendations[1], recommendations[3]]
 
     def filter_seen(self, user_id, scores):
         start_pos = self.URM.indptr[user_id]

@@ -64,7 +64,7 @@ def create_dataset():
     # Sort tags by popularity: most popular tags on top
     tags_df.sort_values("popularity", ascending=False, inplace=True)
     # Print tags data to JSON
-    tags_df.to_json('../resources/tags_sorted.json', orient='split', indent=2)
+    tags_df.to_json('../resources/tags_sorted.json', orient='records', indent=2)
 
 def gather_most_popular():
     data_set = []

@@ -18,30 +18,25 @@ def cleanup_name(name):
 
 class Presentation():
 
-    def __init__(self, ICM, URM, itemID_to_index, featureID_to_index):
+    def __init__(self, ICM, liked_tags, disliked_tags, itemID_to_index, featureID_to_index):
 
         self.ICM = ICM
-        self.URM = URM
+        self.liked_tags = liked_tags
+        self.disliked_tags = disliked_tags
         self.itemID_to_index = itemID_to_index
         self.featureID_to_index = featureID_to_index
 
         self.tags = {}
 
-        liked_games = self.URM.loc[(URM["UserID"] == 0) & (self.URM["Interaction"] > 0.0)]["ItemID"].values
-        liked_tags = self.ICM[self.ICM["ItemID"].isin(liked_games)]["FeatureID"].values
-        for tag in liked_tags:
-            t = util.get_key(self.featureID_to_index, tag)
-            if t not in self.tags:
-                self.tags[t] = 0
-            self.tags[t] += 1
+        for tag in self.liked_tags:
+            if tag not in self.tags:
+                self.tags[tag] = 0
+            self.tags[tag] += 1
 
-        disliked_games = self.URM.loc[(self.URM["UserID"] == 0) & (self.URM["Interaction"] < 0.0)]["ItemID"].values
-        disliked_tags = self.ICM[self.ICM["ItemID"].isin(disliked_games)]["FeatureID"].values
-        for tag in disliked_tags:
-            t = util.get_key(self.featureID_to_index, tag)
-            if t not in self.tags:
-                self.tags[t] = 0
-            self.tags[t] -= 1
+        for tag in self.disliked_tags:
+            if tag not in self.tags:
+                self.tags[tag] = 0
+            self.tags[tag] -= 1
 
     def color(self, word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None):
         if word not in self.tags:
@@ -49,11 +44,11 @@ class Presentation():
             s = int(0)
             l = int(50)
         else:
-            if self.tags[word] > 1:
+            if self.tags[word] > 0:
                 h = int(140)
                 s = int(100)
                 l = int(50)
-            elif self.tags[word] < -1:
+            elif self.tags[word] < 0:
                 h = int(0)
                 s = int(100)
                 l = int(50)
@@ -82,6 +77,8 @@ class Presentation():
         plt.savefig("..\\outputs\\" + folder + "\\" + cleanup_name(name) + "_b.png")
 
     def present_result(self, games, ICM_link):
+
+        print(self.tags)
 
         time = datetime.now()
         folder = time.strftime("%d_%m_%Y_%H_%M_%S")
