@@ -65,14 +65,14 @@ def get_k_most_popular_tags(path, k):
                 disliked_tags[t] += 1
 
     flattened = [item for sublist in combos for item in sublist]
+    flattened = list(set(flattened))
     num_games = int(len(flattened) / 5)
 
     ratings = []
     data_set = []
 
-    for i in range(num_games):
-        ratings.append([0, "game" + str(i), 1.0])
-        data_set.append(["game" + str(i), None, flattened[5*i:5*i + 5]])
+    ratings.append([0, "game", 1.0])
+    data_set.append(["game", None, flattened])
 
     ICM_to_append = pd.DataFrame(data=data_set,columns=["name", "link", "tags"])
     URM = pd.DataFrame(ratings, columns=["UserID", "ItemID", "Interaction"])

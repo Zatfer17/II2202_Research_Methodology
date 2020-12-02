@@ -62,7 +62,7 @@ class Recommender(object):
             if recommended_items == 4:
                 break
 
-        return [recommendations[0], recommendations[2], recommendations[1], recommendations[3]]
+        return recommendations
 
     def filter_seen(self, user_id, scores):
         start_pos = self.URM.indptr[user_id]

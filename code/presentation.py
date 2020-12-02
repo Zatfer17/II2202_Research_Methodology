@@ -20,6 +20,9 @@ class Presentation():
 
     def __init__(self, ICM, liked_tags, disliked_tags, itemID_to_index, featureID_to_index):
 
+        print("LIKED TAGS:", liked_tags)
+        print("DISLIKED TAGS:", disliked_tags)
+
         self.ICM = ICM
         self.liked_tags = liked_tags
         self.disliked_tags = disliked_tags
@@ -28,15 +31,15 @@ class Presentation():
 
         self.tags = {}
 
-        for tag in self.liked_tags:
+        for tag, value in self.liked_tags.items():
             if tag not in self.tags:
                 self.tags[tag] = 0
-            self.tags[tag] += 1
+            self.tags[tag] += value
 
-        for tag in self.disliked_tags:
+        for tag, value in self.disliked_tags.items():
             if tag not in self.tags:
                 self.tags[tag] = 0
-            self.tags[tag] -= 1
+            self.tags[tag] -= value
 
     def color(self, word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None):
         if word not in self.tags:
